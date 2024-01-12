@@ -2,6 +2,7 @@ import webpack from 'webpack';
 import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import WebpackDevServer from 'webpack-dev-server';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
 interface Env {
     mode?: 'development' | 'production'
@@ -22,6 +23,10 @@ export default (env: Env) => {
         },
         mode: mode,
         plugins: [
+            !isDev && new MiniCssExtractPlugin({
+                filename: '[name].[hash].css',
+                chunkFilename: '[name].[hash].[id].css',
+            }),
             new HtmlWebpackPlugin({
                 title: 'Brainers',
                 template: path.resolve(__dirname, 'public', 'index.html'),
@@ -30,6 +35,14 @@ export default (env: Env) => {
         ].filter(Boolean),
         module: {
             rules: [
+                {
+                    test: /\.s[ac]ss$/i,
+                    use: [isDev ? 'style-loader' : MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+                },
+                {
+                    test: /\.css$/i,
+                    use: [isDev ? 'style-loader' : MiniCssExtractPlugin.loader, "css-loader"],
+                },
                 {
                     test: /\.tsx?$/,
                     use: 'ts-loader',
