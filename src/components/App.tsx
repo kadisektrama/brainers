@@ -1,15 +1,20 @@
-import React from "react";
 import './App.css';
 import { Button } from "./Button";
+import { Link, Outlet } from "react-router-dom";
 
 const App = () => {
     return (
         <div>
-            <h1>App</h1>
+            <Link to={"/"}>home</Link>
+            <br />
+            <Link to={"/about"}>about</Link>
 
-            <p className="error">App content</p>
+            <h1>App</h1>
+            <p className="error">App contenttttt</p>
 
             <Button text="Click me" onClick={() => alert('hello')} />
+
+            <Outlet />
         </div>
     );
 }
