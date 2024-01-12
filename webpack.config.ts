@@ -8,11 +8,12 @@ interface Env {
 }
 
 export default (env: Env) => {
+    let isDev = env.mode === 'development';
     let mode = env.mode || 'development';
 
     const config: webpack.Configuration = {
         entry: {
-            main: path.resolve(__dirname, 'src', 'index.js'),
+            main: path.resolve(__dirname, 'src', 'index.tsx'),
         },   
         output: {
             path: path.resolve(__dirname, 'dist'),
@@ -25,8 +26,8 @@ export default (env: Env) => {
                 title: 'Brainers',
                 template: path.resolve(__dirname, 'public', 'index.html'),
             }),
-            new webpack.ProgressPlugin(),
-        ],
+            isDev && new webpack.ProgressPlugin(),
+        ].filter(Boolean),
         module: {
             rules: [
                 {
@@ -39,15 +40,15 @@ export default (env: Env) => {
         resolve: {
             extensions: ['.tsx', '.ts', '.js'],
         },
-        devtool: 'inline-source-map',
-        devServer: {
+        devtool: isDev ? 'inline-source-map' : false,
+        devServer: isDev ? {
             // static: {
             //     directory: path.join(__dirname, 'public'),
             // },
             // compress: true,
             port: 5000,
             open: true,
-        }
+        } : undefined
     }
 
     return config
